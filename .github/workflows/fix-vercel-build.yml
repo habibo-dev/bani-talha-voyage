@@ -21,7 +21,6 @@ jobs:
           from pathlib import Path
           import json
 
-          # Add React type declarations and use an ES2021 target.
           p = Path('package.json')
           data = json.loads(p.read_text(encoding='utf-8'))
           dev = data.setdefault('devDependencies', {})
@@ -35,13 +34,12 @@ jobs:
           data['compilerOptions']['lib'] = ['ES2021', 'DOM', 'DOM.Iterable']
           p.write_text(json.dumps(data, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
 
-          # Vite's CSS module/type declarations.
           Path('src/vite-env.d.ts').write_text('/// <reference types="vite/client" />\n', encoding='utf-8')
 
-          # lucide-react no longer exposes the brand/Kaaba icons used by the demo.
           p = Path('src/main.tsx')
           s = p.read_text(encoding='utf-8')
           s = s.replace(',Kaaba,', ',Landmark,')
+          s = s.replace('[Kaaba,', '[Landmark,')
           s = s.replace(',Instagram,Facebook,Youtube,', ',')
           s = s.replace('<Kaaba/>', '<Landmark/>')
           s = s.replace('<Instagram/>', '<Globe2/>')
@@ -57,5 +55,5 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add package.json tsconfig.json src/vite-env.d.ts src/main.tsx
           git diff --cached --quiet && exit 0
-          git commit -m "fix: make Vercel TypeScript build compatible"
+          git commit -m "fix: complete Vercel build compatibility"
           git push

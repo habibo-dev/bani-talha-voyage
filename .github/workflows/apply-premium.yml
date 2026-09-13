@@ -1,0 +1,22 @@
+name: Apply premium site
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  apply:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply premium files
+        run: |
+          cp src/main-premium.tsx src/main.tsx
+          cp src/styles-premium.css src/styles.css
+          rm src/main-premium.tsx src/styles-premium.css
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/main.tsx src/styles.css src/main-premium.tsx src/styles-premium.css
+          git commit -m "feat: apply premium travel website" || exit 0
+          git push
